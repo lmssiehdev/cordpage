@@ -1,0 +1,33 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import { UserCard } from "@/pages/user/user-card";
+import { User, db, eq } from "astro:db";
+
+const { id } = Astro.params;
+
+const [user] = await db
+  .select()
+  .from(User)
+  .where(eq(User.username, id!))
+  .limit(1);
+
+if (!user) {
+  // TODO: redirect to a user doesn't exist page
+  console.log({ user });
+}
+---
+
+<Layout title={id || "user doesn't exist"}>
+  <div>
+    {
+      user ? (
+        <div class="flex justify-center items-center min-h-screen bg-[--primary-800] px-2">
+          <UserCard user={user} className=" max-w-[600px] rounded-md" />
+        </div>
+      ) : (
+        <div>User doesn't exist</div>
+      )
+    }
+  </div>
+</Layout>
+@/pages/[@]/user-card

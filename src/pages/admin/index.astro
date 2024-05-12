@@ -1,0 +1,20 @@
+---
+import Sidebar from "@/layouts/Sidebar.astro";
+import { Wrapper } from "@/pages/admin/wrapper";
+import { User, db, eq } from "astro:db";
+
+const signedUser = Astro.locals.user;
+if (!signedUser) {
+  return Astro.redirect("/login");
+}
+
+const [user] = await db
+  .select()
+  .from(User)
+  .where(eq(User.username, "olimpiq"))
+  .limit(1);
+---
+
+<Sidebar title="Welcome to Astro.">
+  <Wrapper user={user} client:only />
+</Sidebar>

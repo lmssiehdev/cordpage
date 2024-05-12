@@ -1,0 +1,51 @@
+---
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import Sidebar from "@/layouts/Sidebar.astro";
+import { DeleteAccountBtn } from "@/pages/settings/deleteAccount";
+---
+
+<Sidebar title="something">
+  <main class="flex flex-1 flex-col gap-4 p-4 md:gap-8 md:p-10">
+    <div class="mx-auto grid w-full max-w-6xl gap-2">
+      <h1 class="text-3xl font-semibold text-white">Settings</h1>
+    </div>
+    <div class="flex flex-col items-center gap-4">
+      <!-- <Card className="w-full max-w-[700px]">
+      <CardHeader>
+        <CardTitle>Change username </CardTitle>
+        <CardDescription>
+          Used to identify your store in the marketplace.
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form>
+          <Input placeholder="Store Name" />
+        </form>
+      </CardContent>
+      <CardFooter className="border-t px-6 py-4">
+        <Button>Save</Button>
+      </CardFooter>
+    </Card> -->
+      <Card className="w-full ">
+        <CardHeader>
+          <CardTitle>Delete forever</CardTitle>
+          <!-- <CardDescription>
+          Permanently delete your account.
+        </CardDescription> -->
+        </CardHeader>
+        <CardContent>
+          <p class="text-lg">Permanently delete your account.</p>
+        </CardContent>
+        <CardFooter className="border-t px-6 py-4">
+          <DeleteAccountBtn client:load />
+        </CardFooter>
+      </Card>
+    </div>
+  </main>
+</Sidebar>

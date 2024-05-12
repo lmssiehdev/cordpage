@@ -1,0 +1,52 @@
+---
+import { Button } from "@/components/ui/button";
+import Layout from "@/layouts/Layout.astro";
+import { db, User } from "astro:db";
+
+const user = Astro.locals.user;
+if (!user) {
+  return Astro.redirect("/login");
+} else {
+  return Astro.redirect("/admin");
+}
+
+const result = await db.select().from(User).all();
+---
+
+<Layout title="eu">
+  <div class="bg-[--background-secondary] text-[--text-primary] min-h-screen">
+    <!-- <h1>Hi, {user.username}!</h1> -->
+    <h1 class="font-bold text-4xl">
+      Everything you are.
+      <br />
+      In one,
+      <br />
+      simple link in bio.
+    </h1>
+    <p>Your user ID is {user.id}.</p>
+    <form method="post" action="/api/logout">
+      <Button>Sign out</Button>
+    </form>
+    <!-- <pre class="break-words">{JSON.stringify(result, null, 2)}</pre>
+    {
+      result.map((user) => {
+        return (
+          <div>
+            <img src={getDiscordAvatar(user.discord_id, user.avatar)} />
+          </div>
+        );
+      })
+    } -->
+  </div>
+</Layout>
+<script>
+  document.forms[0].addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const formElement = e.target as HTMLFormElement;
+    await fetch(formElement.action, {
+      method: formElement.method,
+      body: new FormData(formElement),
+    });
+    window.location.href = "/login";
+  });
+</script>

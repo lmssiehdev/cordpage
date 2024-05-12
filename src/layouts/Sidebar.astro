@@ -1,0 +1,72 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import { SidebarSheet } from "@/components/Sheet";
+import { Home, Package2, Settings } from "lucide-react";
+
+const { title } = Astro.props;
+---
+
+<Layout title={title}>
+  <div
+    class="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]"
+  >
+    <div class="hidden bg-[--background-secondary] md:block">
+      <div class="flex h-full max-h-screen flex-col gap-2">
+        <div class="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
+          <a
+            href="/"
+            class="flex items-center gap-2 font-semibold text-[--header-primary]"
+          >
+            <Package2 className="h-6 w-6" />
+            <span class="">DisLink</span>
+          </a>
+        </div>
+        <div class="flex-1">
+          <nav class="grid items-start px-2 text-sm font-medium lg:px-4">
+            <a
+              href="/admin"
+              class="flex items-center gap-3 rounded-lg px-3 py-2 text-[--interactive-normal] transition-all hover:bg-[--background-modifier-selected]"
+            >
+              <Home className="h-4 w-4" />
+              Dashboard
+            </a>
+            <a
+              href="/settings "
+              class="flex items-center gap-3 rounded-lg px-3 py-2 text-[--interactive-normal] transition-all hover:bg-[--background-modifier-selected]"
+            >
+              <Settings className="h-4 w-4" />
+              Settings
+            </a>
+          </nav>
+        </div>
+      </div>
+    </div>
+    <div class="flex flex-col bg-[--background-primary]">
+      <header
+        class="md:hidden flex h-14 items-center gap-4 border-b px-4 lg:h-[60px] lg:px-6"
+      >
+        <SidebarSheet client:load>
+          <nav class="grid gap-2 text-lg font-medium">
+            <a
+              href="/admin"
+              class="flex items-center gap-3 rounded-lg px-3 py-2 text-[--interactive-normal] transition-all hover:bg-[--background-modifier-selected]"
+            >
+              <Home className="h-4 w-4" />
+              Dashboard
+            </a>
+            <a
+              href="/settings "
+              class="flex items-center gap-3 rounded-lg px-3 py-2 text-[--interactive-normal] transition-all hover:bg-[--background-modifier-selected]"
+            >
+              <Settings className="h-4 w-4" />
+              Settings
+            </a>
+          </nav>
+        </SidebarSheet>
+      </header>
+      <main class="flex-1 flex flex-col">
+        <slot />
+      </main>
+    </div>
+  </div>
+</Layout>
