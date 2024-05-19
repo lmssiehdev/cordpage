@@ -1,18 +1,29 @@
 ---
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import Layout from "@/layouts/Layout.astro";
+
 if (Astro.locals.user) {
   return Astro.redirect("/");
 }
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="generator" content={Astro.generator} />
-    <title>Lucia example</title>
-  </head>
-  <body>
-    <h1>Sign in</h1>
-    <a href="/login/discord">Sign in with Discord</a>
-  </body>
-</html>
+<Layout title="Login">
+  <Card className="w-full max-w-sm mx-auto my-10">
+    <CardHeader>
+      <CardTitle className="text-2xl">Login</CardTitle>
+      <!-- <CardDescription>
+        Enter your email below to login to your account.
+      </CardDescription> -->
+    </CardHeader>
+    <CardFooter>
+      <Button variant="discord" className="w-full">Sign in with discord</Button>
+    </CardFooter>
+  </Card>
+</Layout>

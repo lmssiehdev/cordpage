@@ -1,52 +1,107 @@
 ---
-import { Button } from "@/components/ui/button";
+import { SidebarSheet } from "@/components/Sheet";
+import { buttonVariants } from "@/components/ui/button";
 import Layout from "@/layouts/Layout.astro";
-import { db, User } from "astro:db";
+import { cn } from "@/lib/utils";
+import { UserCardWithTilt } from "@/pages/user/user-card";
+import {
+  ArrowUpRightIcon,
+  Home,
+  Settings,
+  User as UserIcon,
+} from "lucide-react";
 
-const user = Astro.locals.user;
-if (!user) {
-  return Astro.redirect("/login");
-} else {
-  return Astro.redirect("/admin");
-}
-
-const result = await db.select().from(User).all();
+const signedUser = Astro.locals.user;
+// if (!signedUser) {
+//   return Astro.redirect("/login");
+// }
 ---
 
 <Layout title="eu">
-  <div class="bg-[--background-secondary] text-[--text-primary] min-h-screen">
-    <!-- <h1>Hi, {user.username}!</h1> -->
-    <h1 class="font-bold text-4xl">
-      Everything you are.
-      <br />
-      In one,
-      <br />
-      simple link in bio.
-    </h1>
-    <p>Your user ID is {user.id}.</p>
-    <form method="post" action="/api/logout">
-      <Button>Sign out</Button>
-    </form>
-    <!-- <pre class="break-words">{JSON.stringify(result, null, 2)}</pre>
-    {
-      result.map((user) => {
-        return (
-          <div>
-            <img src={getDiscordAvatar(user.discord_id, user.avatar)} />
-          </div>
-        );
-      })
-    } -->
+  <div class="h-full">
+    <div class="my-10 text-center">
+      <h2
+        class="font-bold text-4xl flex flex-col items-center mx-auto leading-relaxed"
+      >
+        Share your discord profile<br />
+        <span class="flex gap-2 items-center"
+          >with the world.
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="1em"
+            height="1em"
+            viewBox="0 0 36 36"
+          >
+            <path
+              fill="#ffac33"
+              d="m34.347 16.893l-8.899-3.294l-3.323-10.891a1 1 0 0 0-1.912 0l-3.322 10.891l-8.9 3.294a1 1 0 0 0 0 1.876l8.895 3.293l3.324 11.223a1 1 0 0 0 1.918-.001l3.324-11.223l8.896-3.293a.998.998 0 0 0-.001-1.875"
+            ></path>
+            <path
+              fill="#ffcc4d"
+              d="m14.347 27.894l-2.314-.856l-.9-3.3a.998.998 0 0 0-1.929-.001l-.9 3.3l-2.313.856a1 1 0 0 0 0 1.876l2.301.853l.907 3.622a1 1 0 0 0 1.94-.001l.907-3.622l2.301-.853a.997.997 0 0 0 0-1.874M10.009 6.231l-2.364-.875l-.876-2.365a.999.999 0 0 0-1.876 0l-.875 2.365l-2.365.875a1 1 0 0 0 0 1.876l2.365.875l.875 2.365a1 1 0 0 0 1.876 0l.875-2.365l2.365-.875a1 1 0 0 0 0-1.876"
+            ></path>
+          </svg></span
+        >
+      </h2>
+
+      {
+        signedUser ? (
+          <a
+            href="/admin"
+            class={cn(
+              "font-semibold my-3",
+              buttonVariants({ variant: "discord" })
+            )}
+          >
+            Go to app
+          </a>
+        ) : (
+          <a
+            href="/login/discord"
+            class={cn(
+              "font-semibold my-3",
+              buttonVariants({ variant: "discord" })
+            )}
+          >
+            Sign in with Discord
+          </a>
+        )
+      }
+    </div>
+    <div class="max-w-screen-sm w-full mx-auto my-10">
+      <UserCardWithTilt
+        className="rounded-md"
+        client:load
+        user={{
+          global_name: "preacher",
+          username: "preacher",
+          links: [
+            {
+              id: "0",
+              name: "Twitter",
+              link: "https://twitter.com/preacher",
+            },
+            {
+              id: "1",
+              name: "GitHub",
+              link: "https://github.com/preacher",
+            },
+            {
+              id: "2",
+              name: "Discord",
+              link: "https://discord.gg/preacher",
+            },
+          ],
+        }}
+      />
+    </div>
+    <footer class="text-lg font-semibold text-center">
+      <div class="py-10">
+        <img
+          src="https://cdn3.emoji.gg/emojis/4901-frog-wobble.gif"
+          class="inline-block size-14 pointer-events-none select-none"
+        />
+      </div>
+    </footer>
   </div>
 </Layout>
-<script>
-  document.forms[0].addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const formElement = e.target as HTMLFormElement;
-    await fetch(formElement.action, {
-      method: formElement.method,
-      body: new FormData(formElement),
-    });
-    window.location.href = "/login";
-  });
-</script>

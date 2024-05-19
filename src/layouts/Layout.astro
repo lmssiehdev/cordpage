@@ -1,7 +1,14 @@
 ---
-import "@/styles/globals.css";
+import { LogoutButton } from "@/components/LogoutButton";
+import { SidebarSheet } from "@/components/Sheet";
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import "@/styles/discord.css";
+import "@/styles/globals.css";
 import "@fontsource-variable/noto-sans";
+import { Home, Settings, User as UserIcon } from "lucide-react";
+
+const signedUser = Astro.locals.user;
 interface Props {
   title: string;
 }
@@ -19,9 +26,53 @@ const { title } = Astro.props;
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
   </head>
-  <body class="bg-gray-100 font-sans">
+  <body
+    class="flex flex-col min-h-screen h-full bg-[--background-secondary] text-[--text-primary] font-sans"
+  >
+    <header
+      class="flex h-14 justify-between items-center gap-4 border-b px-4 lg:h-[60px] lg:px-6"
+    >
+      <a href={`/`}>
+        <h1 class="text-lg text-white">cordpage</h1>
+      </a>
+      <div class="flex items-center gap-2">
+        {
+          signedUser ? (
+            <LogoutButton client:load />
+          ) : (
+            <a
+              target="_blank"
+              href={`/login`}
+              class={cn(
+                buttonVariants({ variant: "discord", size: "sm" }),
+                "flex items-center gap-2"
+              )}
+            >
+              Login <UserIcon className="size-5" />
+            </a>
+          )
+        }
+
+        <SidebarSheet client:load>
+          <nav class="grid gap-2 text-lg font-medium">
+            <a
+              href="/admin"
+              class="flex items-center gap-3 rounded-lg px-3 py-2 text-[--interactive-normal] transition-all hover:bg-[--background-modifier-selected]"
+            >
+              <Home className="h-4 w-4" />
+              Dashboard
+            </a>
+            <a
+              href="/settings "
+              class="flex items-center gap-3 rounded-lg px-3 py-2 text-[--interactive-normal] transition-all hover:bg-[--background-modifier-selected]"
+            >
+              <Settings className="h-4 w-4" />
+              Settings
+            </a>
+          </nav>
+        </SidebarSheet>
+      </div>
+    </header>
     <slot />
   </body>
 </html>
-
-<style></style>

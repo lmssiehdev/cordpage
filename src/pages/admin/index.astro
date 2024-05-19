@@ -1,4 +1,5 @@
 ---
+import Layout from "@/layouts/Layout.astro";
 import Sidebar from "@/layouts/Sidebar.astro";
 import { Wrapper } from "@/pages/admin/wrapper";
 import { User, db, eq } from "astro:db";
@@ -11,10 +12,12 @@ if (!signedUser) {
 const [user] = await db
   .select()
   .from(User)
-  .where(eq(User.username, "olimpiq"))
+  .where(eq(User.discord_id, signedUser.discordId))
   .limit(1);
 ---
 
-<Sidebar title="Welcome to Astro.">
-  <Wrapper user={user} client:only />
-</Sidebar>
+<Layout title="Welcome to Astro.">
+  <Sidebar>
+    <Wrapper user={user} client:only />
+  </Sidebar>
+</Layout>

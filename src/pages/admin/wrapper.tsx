@@ -5,6 +5,9 @@ import { UserCard } from "@/pages/user/user-card";
 
 import { EditForm } from "@/pages/admin/form";
 import { generateId } from "lucia";
+import { cn } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/button";
+import { ArrowUpRightIcon } from "lucide-react";
 
 export type State = DiscordUser;
 
@@ -69,18 +72,28 @@ function reducer(state: State, action: Action) {
 export function Wrapper({ user }: { user: DiscordUser }) {
   const [state, dispatch] = useImmerReducer(reducer, user as State);
   return (
-    <>
-      <div className="flex-1 flex justify-between gap-4">
-        <div className="flex flex-col w-full max-w-md flex-1 p-4">
-          <h1 className="text-lg font-semibold md:text-2xl text-[--text-normal] mb-6">
+    <div className="flex-1 flex ">
+      <div className="flex flex-col flex-1 p-4">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-lg font-semibold md:text-2xl text-[--text-normal]">
             Edit
-          </h1>
-          <EditForm state={state} dispatch={dispatch} />
+          </h2>
+          <a
+            target="_blank"
+            href={`/user/${user.username}`}
+            className={cn(
+              "flex gap-2 items-center",
+              buttonVariants({ variant: "discord_muted", size: "xs" })
+            )}
+          >
+            Preview <ArrowUpRightIcon className="h-4 w-4" />
+          </a>
         </div>
-        <div className="flex flex-col flex-1">
-          <UserCard user={state} />
-        </div>
+        <EditForm state={state} dispatch={dispatch} />
       </div>
-    </>
+      <div className="flex flex-col flex-1">
+        <UserCard user={state} />
+      </div>
+    </div>
   );
 }

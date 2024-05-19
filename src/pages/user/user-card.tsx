@@ -1,9 +1,24 @@
-import { Separator } from "@/components/ui/separator";
-import { getDiscordAvatar } from "@/pages/admin/form";
 import { Link } from "@/components/ui/link";
-import type { DiscordUser } from "@/pages/login/discord/callback";
+import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
+import { getDiscordAvatar } from "@/pages/admin/form";
+import type { DiscordUser } from "@/pages/login/discord/callback";
+import Tilt from "react-parallax-tilt";
 import { Fragment } from "react/jsx-runtime";
+
+export function UserCardWithTilt({
+  user,
+  className,
+}: {
+  user: DiscordUser;
+  className?: string;
+}) {
+  return (
+    <Tilt className="parallax-effect">
+      <UserCard user={user} className={className} />
+    </Tilt>
+  );
+}
 
 export function UserCard({
   user,
@@ -37,7 +52,7 @@ export function UserCard({
         </div>
       </div>
 
-      <div className="m-4 rounded-lg overflow-hidden shadow-sm bg-[--background-floating]">
+      <div className="m-4 rounded-lg overflow-hidden shadow-lg bg-[--background-floating]">
         <div className="bg-discord-floating text-white p-3">
           <div className=" font-semibold text-xl">{user.global_name}</div>
           <div className=" font-bold"> {user.username} </div>
@@ -51,7 +66,7 @@ export function UserCard({
             </div>
             {user.description}
           </div>
-          {user?.links.length > 0 && (
+          {user?.links?.length > 0 && (
             <div>
               <div
                 className="text-xs font-bold my-2

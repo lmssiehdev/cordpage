@@ -1,6 +1,3 @@
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useFieldArray, useForm } from "react-hook-form";
-import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -20,23 +17,27 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { minDelay } from "@/lib/utils";
 import type { Action, State } from "@/pages/admin/wrapper";
-import type { DiscordUser, STATUS } from "@/pages/login/discord/callback";
+import type { STATUS } from "@/pages/login/discord/callback";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { generateId } from "lucia";
-import { PlusIcon, XIcon } from "lucide-react";
+import { LoaderIcon, PlusIcon, XIcon } from "lucide-react";
 import type React from "react";
 import { useEffect, useState } from "react";
+import { useFieldArray, useForm } from "react-hook-form";
+import { z } from "zod";
 
 export const getDiscordAvatar = (id: string, avatar: string, size = 160) => {
-  // if ( avatar === "" ) {
-  //   return "default avatar"
-  // }
+  if (avatar === "") {
+    return "https://cdn.discordapp.com/avatars/155149108183695360/b4fdfc64edff74c37e1574d34fad66c2.webp?size=160";
+  }
   return `https://cdn.discordapp.com/avatars/${id}/${avatar}.webp?size=160`;
 };
 
 const DESCRIPTION_MAX_LENGTH = 450;
 
-const STATUS = {
+const STATUS_MAP = {
   ACTIVE: "Active",
   IDLE: "Idle",
   DO_NO_DISTURB: "Do Not Disturb",
@@ -133,19 +134,20 @@ export function EditForm({
     return () => subscription.unsubscribe();
   }, [form.watch]);
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
-    // form.setError("links", {
-    //   type: "manual",
-    //   message: "Invalid Status",
-    // });
-    fetch("/api/update-data", {
-      method: "POST",
-      body: JSON.stringify(state),
-    })
-      .then((res) => res.json())
-      .then(console.log)
-      .finally(() => setIsLoading(false));
+
+    await minDelay(
+      fetch("/api/update-data", {
+        method: "POST",
+        body: JSON.stringify(state),
+      })
+        .then((res) => res.json())
+        .then(console.log),
+      700
+    );
+
+    setIsLoading(false);
   }
 
   return (
@@ -212,16 +214,19 @@ export function EditForm({
                   defaultValue={field.value}
                 >
                   <FormControl>
-                    <SelectTrigger>
+                    <SelectTrigger className="bg-[--input-background] text-white border-none">
                       <SelectValue placeholder="Select a verified email to display" />
                     </SelectTrigger>
                   </FormControl>
-                  <SelectContent>
-                    {Object.keys(STATUS).map((key) => {
-                      const statusDisplay = STATUS[key as keyof typeof STATUS];
+                  <SelectContent className="bg-[--input-background] text-white  border-none">
+                    {Object.keys(STATUS_MAP).map((key) => {
+                      const statusDisplay =
+                        STATUS_MAP[key as keyof typeof STATUS_MAP];
                       return (
                         <SelectItem
-                          className="capitalize border-current"
+                          className="capitalize border-current
+                          focus:bg-[--background-modifier-hover]
+                          focus:text-white"
                           value={key}
                           key={key}
                         >
@@ -248,11 +253,11 @@ export function EditForm({
                   onClick={() =>
                     append({
                       id: generateId(12),
-                      name: "",
+                      name: "Label",
                       link: "https://",
                     })
                   }
-                  className="flex items-center justify-center gap-2 text-[--text-primary] bg-[--button-secondary-background] rounded-sm text-xs py-1 px-2 w-full font-bold"
+                  className="flex items-center justify-center gap-2 text-[--text-primary] bg-[--background-tertiary] rounded-sm text-xs py-1 px-2 w-full font-bold"
                 >
                   <PlusIcon className="size-4" />
                   Add Link
@@ -261,7 +266,7 @@ export function EditForm({
             )}
 
             {fields.map((gfield, index) => (
-              <div key={gfield.id} className="flex gap-2 relative my-4">
+              <div key={gfield.id} className="flex gap-2  my-4">
                 <FormField
                   control={form.control}
                   name={`links.${index}.name`}
@@ -294,15 +299,17 @@ export function EditForm({
                     </FormItem>
                   )}
                 />
-
-                <button
-                  onClick={() => {
-                    remove(index);
-                  }}
-                  className="absolute -top-[10px] -right-[18px] hover:text-[--info-danger-foreground]  text-[--interactive-normal] bg-[--primary-630] rounded-full flex justify-center items-center size-9"
-                >
-                  <XIcon />
-                </button>
+                <div>
+                  <div className="invisible">LABEL</div>
+                  <button
+                    onClick={() => {
+                      remove(index);
+                    }}
+                    className=" hover:text-[--info-danger-foreground]  text-[--interactive-normal] bg-[--primary-630] rounded-full flex justify-center items-center size-9"
+                  >
+                    <XIcon />
+                  </button>
+                </div>
               </div>
             ))}
           </div>
@@ -312,6 +319,9 @@ export function EditForm({
             disabled={isLoading}
             type="submit"
           >
+            {isLoading && (
+              <LoaderIcon className="animate-spin -ml-1 mr-2 h-4 w-4" />
+            )}
             Publish
           </Button>
         </form>

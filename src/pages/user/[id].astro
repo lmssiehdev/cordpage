@@ -1,5 +1,5 @@
 ---
-import Layout from "@/layouts/Layout.astro";
+import UserPageLayout from "@/layouts/UserPageLayout.astro";
 import { UserCard } from "@/pages/user/user-card";
 import { User, db, eq } from "astro:db";
 
@@ -17,17 +17,14 @@ if (!user) {
 }
 ---
 
-<Layout title={id || "user doesn't exist"}>
-  <div>
-    {
-      user ? (
-        <div class="flex justify-center items-center min-h-screen bg-[--primary-800] px-2">
-          <UserCard user={user} className=" max-w-[600px] rounded-md" />
-        </div>
-      ) : (
-        <div>User doesn't exist</div>
-      )
-    }
-  </div>
-</Layout>
-@/pages/[@]/user-card
+<UserPageLayout title={id || "user doesn't exist"}>
+  {
+    user ? (
+      <div class="flex-1 flex justify-center items-center bg-[--primary-800] px-2">
+        <UserCard user={user} className=" max-w-[600px] rounded-md" />
+      </div>
+    ) : (
+      <div>User doesn't exist</div>
+    )
+  }
+</UserPageLayout>
